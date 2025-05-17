@@ -9,7 +9,7 @@ in {
   home.stateVersion = "24.05";
 
   home.packages = with pkgs; [
-    # --- CLI essentials ---
+    # --- CLI ---
     git curl wget jq fzf ripgrep bat htop unzip zip tree
     neovim
     nodejs
@@ -18,6 +18,8 @@ in {
     gh                    # GitHub CLI
     direnv
     zoxide
+    just
+    nixpkgs-fmt
 
     # --- Browsers ---
     firefox
