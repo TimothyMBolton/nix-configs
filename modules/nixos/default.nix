@@ -45,6 +45,7 @@
     kitty
     google-chrome
     gh
+    wofi
   ];
 
   # XDG Portal configuration

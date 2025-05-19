@@ -5,12 +5,18 @@
     ./hardware-configuration.nix
   ];
 
+  environment.sessionVariables = {
+    WLR_NO_HARDWARE_CURSORS = "1";
+  };
+
   # Bootloader configuration
   boot.loader.grub = {
     enable = false;
     efiSupport = true;
     device = "nodev";
   };
+
+  boot.kernelParams = [ "nvidia-drm.modeset=1" ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -73,19 +79,22 @@
 
   # System packages
   environment.systemPackages = with pkgs; [
-    vim
-    wget
-    vscode
-    neovim
-    git
-    tree
-    kitty
-    firefox
-    google-chrome
-    waybar
-    rofi-wayland
-    swww
     dunst
+    firefox
+    gh
+    git
+    google-chrome
+    kitty
+    neofetch
+    neovim
+    swww
+    tree
+    vim
+    vscode
+    waybar
+    wget
+    wofi
+    woeusb-ng
   ];
 
   system.stateVersion = "23.11";

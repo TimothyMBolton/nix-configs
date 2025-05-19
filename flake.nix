@@ -36,6 +36,7 @@
         modules = [
           ./modules/shared/common.nix
           ./hosts/darwin/configuration.nix
+          ./hosts/hosts/default.nix
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
