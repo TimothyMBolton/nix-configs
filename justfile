@@ -12,7 +12,7 @@ check:
 
 # Build and switch to new NixOS configuration
 switch-nixos:
-    sudo nixos-rebuild switch --flake .#nixos
+    nixos-rebuild switch --flake .#nixos
 
 # Build and switch to new Darwin configuration
 switch-darwin:
@@ -20,7 +20,7 @@ switch-darwin:
 
 # Build without switching - NixOS
 build-nixos:
-    sudo nixos-rebuild build --flake .#nixos
+    nixos-rebuild build --flake .#nixos
 
 # Build without switching - Darwin
 build-darwin:
@@ -28,8 +28,8 @@ build-darwin:
 
 # Clean up old generations - NixOS
 clean-nixos:
-    sudo nix-collect-garbage -d
-    sudo nixos-rebuild boot --flake .#nixos
+    nix-collect-garbage -d
+    nixos-rebuild boot --flake .#nixos
 
 # Clean up old generations - Darwin
 clean-darwin:

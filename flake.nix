@@ -15,34 +15,32 @@
 
   outputs = { self, nixpkgs, home-manager, darwin }: {
     nixosConfigurations = {
-      # Replace 'hostname' with your NixOS hostname
       nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./modules/shared/common.nix
-          ./hosts/nixos/configuration.nix
+          (self + "/modules/shared/common.nix")  # Use explicit path
+          (self + "/hosts/nixos/configuration.nix")
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.timothybolton = import ./home;
+            home-manager.users.timothybolton = import (self + "/home");
           }
         ];
       };
     };
 
     darwinConfigurations = {
-      # Replace 'macbook' with your macOS hostname
       macbook = darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         modules = [
-          ./modules/shared/common.nix
-          ./hosts/darwin/configuration.nix
+          (self + "/modules/shared/common.nix")  # Use explicit path
+          (self + "/hosts/darwin/configuration.nix")
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.timothybolton = import ./home;
+            home-manager.users.timothybolton = import (self + "/home");
           }
         ];
       };

@@ -7,6 +7,7 @@
     vim
     neovim
     vscode
+    just
   ];
 
   # Common system settings
