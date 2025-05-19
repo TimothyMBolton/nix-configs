@@ -1,51 +1,49 @@
 {
-  description = "Tim's Macbook Pro Setup";
+  description = "NixOS and Darwin System Configurations";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    darwin = {
+      url = "github:lnl7/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-outputs = { self, nixpkgs, home-manager, flake-utils, ... }:
-let
-  supportedSystems = [ "aarch64-darwin" "x86_64-linux" ];
-  username = "timothybolton";
-in
-{
-  # Shared homeConfigurations across platforms
-  homeConfigurations = builtins.listToAttrs (map (system:
-    let
-      pkgs = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
-    in {
-      name = "${username}@${system}";
-      value = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+  outputs = { self, nixpkgs, home-manager, darwin }: {
+    nixosConfigurations = {
+      # Replace 'hostname' with your NixOS hostname
+      nixos = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
         modules = [
-          ./home.nix
-          (if pkgs.stdenv.isDarwin then ./darwin.nix else ./linux.nix)
+          ./hosts/nixos/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.yourusername = import ./home;
+          }
         ];
-        extraSpecialArgs = { inherit username; };
       };
-    }
-  ) supportedSystems);
-
-  # System-specific outputs
-} // flake-utils.lib.eachDefaultSystem (system:
-  let
-    pkgs = import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
     };
-  in {
-    devShells.default = pkgs.mkShell {
-      buildInputs = with pkgs; [ go nodejs python3 just git ];
-    };
-    formatter = pkgs.nixpkgs-fmt;
-  });
 
+    darwinConfigurations = {
+      # Replace 'macbook' with your macOS hostname
+      macbook = darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        modules = [
+          ./hosts/darwin/configuration.nix
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.yourusername = import ./home;
+          }
+        ];
+      };
+    };
+  };
 }
