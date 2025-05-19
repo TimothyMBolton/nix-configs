@@ -5,33 +5,23 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [ 
+    ./hardware-configuration.nix
+  ];
 
-  # Bootloader.
+  # Bootloader configuration
   boot.loader.grub = {
-	enable = true;
+	enable = false;
 	efiSupport = true;
 	device = "nodev";
   };
 
-  boot.loader.systemd-boot.enable = false;
+  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
-  networking.networkmanager.enable = true;
-
-  # Set your time zone.
-  time.timeZone = "Australia/Sydney";
+  # Basic system configuration
+  networking.hostName = "nixos";
+  time.timeZone = "America/Los_Angeles";  # Adjust this to your timezone
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_AU.UTF-8";
@@ -64,8 +54,11 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  # Enable sound
+  sound.enable = true;
+  hardware.pulseaudio.enable = true;
+
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -87,7 +80,7 @@
   users.users.timothybolton = {
     isNormalUser = true;
     description = "timothybolton";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "wheel" "networkmanager" ];
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -111,14 +104,6 @@
     gh
   ];
 
- # boot.loader.grub = {
-  #   enable = true;
-   #  efiSupport = true;
-    # device = "nodev";
- # };
-  
- 
-
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -138,12 +123,6 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.11"; # Did you read the comment?
-
+  # This value determines the NixOS release with which your system is to be compatible
+  system.stateVersion = "23.11"; # Do not change this unless you know what you're doing
 }
