@@ -8,6 +8,7 @@
     neovim
     vscode
     just
+    google-chrome
   ];
 
   # Common system settings

@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
 
 {
@@ -11,9 +7,9 @@
 
   # Bootloader configuration
   boot.loader.grub = {
-	enable = false;
-	efiSupport = true;
-	device = "nodev";
+    enable = false;
+    efiSupport = true;
+    device = "nodev";
   };
 
   boot.loader.systemd-boot.enable = true;
@@ -21,11 +17,10 @@
 
   # Basic system configuration
   networking.hostName = "nixos";
-  time.timeZone = "America/Los_Angeles";  # Adjust this to your timezone
+  time.timeZone = "Australia/Sydney";
 
-  # Select internationalisation properties.
+  # Locale settings
   i18n.defaultLocale = "en_AU.UTF-8";
-
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_AU.UTF-8";
     LC_IDENTIFICATION = "en_AU.UTF-8";
@@ -38,90 +33,60 @@
     LC_TIME = "en_AU.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "au";
-    variant = "";
-  };
-
-  # Enable CUPS to print documents.
+  # Printing support
   services.printing.enable = true;
 
-  # Disable PulseAudio since we're using PipeWire
-  hardware.pulseaudio.enable = false;
-
-  # Enable sound with pipewire.
+  # Audio configuration
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # User account
   users.users.timothybolton = {
     isNormalUser = true;
     description = "timothybolton";
     extraGroups = [ "wheel" "networkmanager" ];
-    packages = with pkgs; [
-    #  thunderbird
-    ];
+    packages = with pkgs; [ kitty ];
   };
-
-  # Install firefox.
-  programs.firefox.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  # Hyprland and Wayland session setup
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+  };
+
+  # Use greetd as a minimal Wayland-compatible display manager
+  services.greetd = {
+    enable = true;
+    settings.default_session = {
+      command = "Hyprland";
+      user = "timothybolton";
+    };
+  };
+
+  # System packages
   environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    vim
     wget
     vscode
     neovim
-    google-chrome
     git
-    gh
+    tree
+    kitty
+    firefox
+    google-chrome
+    waybar
+    rofi-wayland
+    swww
+    dunst
   ];
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # This value determines the NixOS release with which your system is to be compatible
-  system.stateVersion = "23.11"; # Do not change this unless you know what you're doing
+  system.stateVersion = "23.11";
 }

@@ -18,13 +18,13 @@
       nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          (self + "/modules/shared/common.nix")  # Use explicit path
-          (self + "/hosts/nixos/configuration.nix")
+          ./modules/shared/common.nix
+          ./hosts/nixos/configuration.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.timothybolton = import (self + "/home");
+            home-manager.users.timothybolton = import ./home;
           }
         ];
       };
@@ -34,13 +34,13 @@
       macbook = darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         modules = [
-          (self + "/modules/shared/common.nix")  # Use explicit path
-          (self + "/hosts/darwin/configuration.nix")
+          ./modules/shared/common.nix
+          ./hosts/darwin/configuration.nix
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.timothybolton = import (self + "/home");
+            home-manager.users.timothybolton = import ./home;
           }
         ];
       };
